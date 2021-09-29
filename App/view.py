@@ -19,7 +19,13 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+import config as cf
+from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
+from DISClib.Algorithms.Sorting import shellsort as sa
+assert cf
+from DISClib.ADT.map import get
 import config as cf
 import sys
 import controller
@@ -40,6 +46,10 @@ def printMenu():
     print("2- ")
 
 catalog = None
+def initcatalogo():
+    return controller.initcatalogo()
+def cargardatos(catalogo):
+    controller.loaddata(catalogo)
 
 """
 Menu principal
@@ -49,8 +59,15 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        catalogo = initcatalogo()
+        cargardatos(catalogo)
+        print(mp.get(catalogo["obras"], "Ink, pencil, and colored pencil on tracing paper"))
+        #print(catalogo["obras"])
 
     elif int(inputs[0]) == 2:
+        tecnica = input("Escriba el nombre de la Tecnica:  ")
+        masantiguas = controller.portecnica(tecnica, catalogo)
+        print(masantiguas)
         pass
 
     else:

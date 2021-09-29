@@ -28,6 +28,22 @@ import csv
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
+def initcatalogo():
+    a = model.newcatalog()
+    return a
+def loaddata(catalogo):
+    cargarobras(catalogo)
+
+def cargarobras(catalogo):
+    obraarchivo = cf.data_dir +"Artworks-utf8-small.csv"
+    archivo = csv.DictReader(open(obraarchivo, encoding="utf-8"))
+    for obra in archivo:
+        model.addobra(catalogo, obra)
+    model.mapstructure(catalogo)
+
+def portecnica(tecnica, catalogo):
+    a = model.obrasmasantiguas(tecnica, catalogo)
+    return a
 
 # Inicialización del Catálogo de libros
 
