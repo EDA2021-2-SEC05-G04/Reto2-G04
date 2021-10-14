@@ -24,7 +24,7 @@
  * Dario Correal - Version inicial
  """
 
-
+import time
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -41,8 +41,22 @@ def newcatalog ():
     catalogo = {
         "obras" :  None,
         "obra" : None,
-        "medium" : None
+        "medium" : None,
+        "contiid": None,
+        "nation" : None
     }
+    catalogo["contiid"] = mp.newMap(
+       100, 
+        maptype = "PROBING",
+        loadfactor = 0.8
+
+    )
+    catalogo["nation"]= mp.newMap(
+        200, 
+        maptype = "CHAINING",
+        loadfactor = 3.0
+    )
+    catalogo["national"] = lt.newList("ARRAY_LIST",compararnacionalidad) 
     catalogo["medium"] = lt.newList("ARRAY_LIST", comparartenica)
     catalogo["obras"] = mp.newMap(
         200, 
@@ -57,11 +71,25 @@ def newcatalog ():
 # Construccion de modelos
 
 # Funciones para agregar informacion al catalogo
+def getid(catalogo, artist):
+    id = artist["ConstituentID"]
+    addartist(catalogo, id, artist)
+def addartist(catalogo, id, artist):
+    mp.put(catalogo["contiid"], id , artist["Nationality"])
+
 
 def addobra(catalogo, obra):
     #lt.addLast(catalogo["obra"], obra)
+    obr = lt.newList(datastructure='SINGLE_LINKED')
     tecnica = obra["Medium"]
+    ides = obra["ConstituentID"].split(", ")
+    lt.addLast(obr, obra)
+    for id in ides:
+        idx = id.strip("[]' ")
+        element = mp.get(catalogo["contiid"], idx)
+        mp.put(catalogo["nation"], element["value"], obra["Title"])
     addtecnica(catalogo, tecnica, obra)
+    
 def addtecnica(catalogo, tecnica, obra):
     a = lt.isPresent(catalogo["medium"], tecnica)
     if a > 0:
@@ -82,7 +110,7 @@ def addtec(tecnica):
 def mapstructure(catalogo):
     obras = catalogo["medium"]
     for i in lt.iterator(obras):
-        print(i["tecnica"])
+
         mp.put(catalogo["obras"], i["tecnica"], i["obras"])
 # Funciones para creacion de datos
 
@@ -95,6 +123,12 @@ def comparartenica(tecnica, obra):
     elif (tecnica > obra['tecnica']):
         return 1
     return -1 
+def compararnacionalidad(tecnica, obra):
+    if (tecnica == obra['nacionalidad']):
+        return 0
+    elif (tecnica > obra['nacionalidad']):
+        return 1
+    return -1 
 def obrasmasantiguas(tecnica, catalogo):
     g = mp.get(catalogo["obras"], tecnica)
     ordenado = mg.sort(g["value"],cmpfecha)
@@ -104,3 +138,13 @@ def obrasmasantiguas(tecnica, catalogo):
 
 def cmpfecha (obra1, obra2):
     return(obra1["Date"] > obra2["Date"])
+
+def histogram (elements):
+    elist = mp.valueSet(elements)
+    histo = {}
+    for i in lt.iterator(elist):
+        if i in histo.keys():
+            histo[i] += 1
+        else:
+            histo[i] = 1
+    return histo

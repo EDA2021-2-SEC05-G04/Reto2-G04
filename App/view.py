@@ -61,15 +61,16 @@ while True:
         print("Cargando información de los archivos ....")
         catalogo = initcatalogo()
         cargardatos(catalogo)
-        print(mp.get(catalogo["obras"], "Ink, pencil, and colored pencil on tracing paper"))
-        #print(catalogo["obras"])
 
     elif int(inputs[0]) == 2:
         tecnica = input("Escriba el nombre de la Tecnica:  ")
         masantiguas = controller.portecnica(tecnica, catalogo)
         print(masantiguas)
         pass
-
+    elif  int(inputs[0]) == 3:
+    
+        histo = controller.histograma(catalogo["contiid"])
+        print(histo)
     else:
         sys.exit(0)
 sys.exit(0)
