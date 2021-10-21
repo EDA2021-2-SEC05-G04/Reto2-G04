@@ -45,8 +45,7 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Listar cronologicamente los artistas")
-    print("3- Listar cronológicamente las obras")
+    print("2-  listar cronológicamente los artistas")
     print("4-  casificar las obras de un artista por técnica ")
     print("5-  clasificar las obras por la nacionalidad de sus creadores ")
     print("6-  transportar obras de un departamento ")
@@ -117,8 +116,8 @@ while True:
     elif  int(inputs[0]) == 6:
          departamento = input("Ingrese departamento a transportar:  ")
          costo = controller.req5(catalogo, departamento)
-         print("Costo total de transporte" + costo[0])
-         print("Peso neto de transporte" + costo[1])
+         print("Costo total de transporte" + str(costo[0]))
+         print("Peso neto de transporte" + str(costo[1]))
          for i in lt.iterator(costo[2]):
              print("Titulo: " , i["obra"]["Title"])
              print("Artistas: " ,i["obra"]["ConstituentID"])   

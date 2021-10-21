@@ -179,7 +179,8 @@ def obrasenrango(inventario,f1,f2):
         c+=avance
     
     return auxiliar,contador   
-def req3(catalogo, artist):
+
+def  req3(catalogo, artist):
     consti = mp.get(catalogo["names"], artist)
     obras = mp.get(catalogo["hasid"], consti["value"]["ConstituentID"])
     numobras = lt.size(obras["value"])
