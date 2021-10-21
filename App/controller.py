@@ -49,13 +49,25 @@ def cargarartistas(catalogo):
 def has(catalogo):
     model.hasid(catalogo)
 def req3(catalogo, artist):
+    start_time = time.process_time()
     ans = model.req3(catalogo, artist)
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return ( ans)
 def req4(catalogo):
+    start_time = time.process_time()
     a =  model.req4(catalogo)
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return(a)
 def req5 (catalogo, departamento):
+    start_time = time.process_time()
     a = model.req5(catalogo, departamento)
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return(a)
 # Inicialización del Catálogo de libros
 

@@ -135,7 +135,7 @@ def hasid(catalogo):
     for i in lt.iterator(dict):
         mp.put(catalogo["hasid"], i["cid"], i["obras"])
 
-def req3(catalogo, artist):
+def  req3(catalogo, artist):
     consti = mp.get(catalogo["names"], artist)
     obras = mp.get(catalogo["hasid"], consti["value"]["ConstituentID"])
     numobras = lt.size(obras["value"])
