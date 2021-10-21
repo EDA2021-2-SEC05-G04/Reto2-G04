@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
+
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -44,6 +45,9 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- ")
+    print("4-  casificar las obras de un artista por técnica ")
+    print("5-  clasificar las obras por la nacionalidad de sus creadores ")
+    print("6-  transportar obras de un departamento ")
 
 catalog = None
 def initcatalogo():
@@ -62,15 +66,43 @@ while True:
         catalogo = initcatalogo()
         cargardatos(catalogo)
 
+
     elif int(inputs[0]) == 2:
-        tecnica = input("Escriba el nombre de la Tecnica:  ")
-        masantiguas = controller.portecnica(tecnica, catalogo)
-        print(masantiguas)
+        controller.has(catalogo)
+        print(catalogo["hasid"])
         pass
     elif  int(inputs[0]) == 3:
-    
-        histo = controller.histograma(catalogo["contiid"])
-        print(histo)
+        print("UWU")
+    elif  int(inputs[0]) == 4:
+        controller.has(catalogo)
+        artist = input("Nombre del artista: ")
+        ans = controller.req3(catalogo, artist)
+        print("numero de obras de  " + artist+  " es : " + str(ans[0]))
+        print("las tecnicas utilizadas de   " + artist+  " son: " + str(ans[1]))
+        print("la tecnica mas usada de  " + artist+  " es: " + str(ans[2]))
+        for ob in lt.iterator(ans[3]):
+            print("Titulo " +  str(ob["Title"]))
+            print("Fecha de la obra " +  str(ob["Date"]))
+            print("Medio " +  str(ob["Medium"]))
+            print("Dimensiones " +  str(ob["Dimensions"]))
+    elif  int(inputs[0]) == 5:
+         a = controller.req4(catalogo)
+         print(a) 
+         for l in range(1,4):
+             print((lt.getElement(a[1], l)))
+         for k in range(lt.size(a[1])-3, lt.size(a[1])+1 ):
+             print((lt.getElement(a[1], k)))
+    elif  int(inputs[0]) == 6:
+         departamento = input("Ingrese departamento a transportar:  ")
+         costo = controller.req5(catalogo, departamento)
+         print("Costo total de transporte" + costo[0])
+         print("Peso neto de transporte" + costo[1])
+         for i in lt.iterator(costo[2]):
+             print("Titulo: " , i["obra"]["Title"])
+             print("Artistas: " ,i["obra"]["ConstituentID"])   
+             print("fecha : " , i["obra"]["Date"])
+             print("medio: ", i["obra"]["Medium"])
+             print("Dimenciones: " , i["obra"]["Dimensions"])
     else:
         sys.exit(0)
 sys.exit(0)

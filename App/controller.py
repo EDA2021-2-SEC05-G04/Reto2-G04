@@ -39,27 +39,28 @@ def cargarobras(catalogo):
     archivo = csv.DictReader(open(obraarchivo, encoding="utf-8"))
     for obra in archivo:
         model.addobra(catalogo, obra)
-    model.mapstructure(catalogo)
+
 def cargarartistas(catalogo):
     obraarchivo = cf.data_dir +"Artists-utf8-small.csv"
     archivo = csv.DictReader(open(obraarchivo, encoding="utf-8"))
-    start_time = time.process_time()
-    for obra in archivo:
-        model.getid(catalogo, obra)
-    stop_time = time.process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    print(elapsed_time_mseg)
-def histograma(map):
-    a = model.histogram(map)
-    return a
-def portecnica(tecnica, catalogo):
-    a = model.obrasmasantiguas(tecnica, catalogo)
-    return a
+    for artist in archivo:
+       model.addartist(catalogo, artist)
 
+def has(catalogo):
+    model.hasid(catalogo)
+def req3(catalogo, artist):
+    ans = model.req3(catalogo, artist)
+    return ( ans)
+def req4(catalogo):
+    a =  model.req4(catalogo)
+    return(a)
+def req5 (catalogo, departamento):
+    a = model.req5(catalogo, departamento)
+    return(a)
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos
 
 # Funciones de ordenamiento
 
-# Funciones de consulta sobre el catálogo
+# Funciones de consulta sobre
