@@ -39,12 +39,15 @@ def cargarobras(catalogo):
     archivo = csv.DictReader(open(obraarchivo, encoding="utf-8"))
     for obra in archivo:
         model.addobra(catalogo, obra)
+        model.cargarobraporfecha(catalogo,obra)
+
 
 def cargarartistas(catalogo):
     obraarchivo = cf.data_dir +"Artists-utf8-small.csv"
     archivo = csv.DictReader(open(obraarchivo, encoding="utf-8"))
     for artist in archivo:
        model.addartist(catalogo, artist)
+       model.cargar_artistaporFecha(catalogo, artist) 
 
 def has(catalogo):
     model.hasid(catalogo)
@@ -57,6 +60,12 @@ def req4(catalogo):
 def req5 (catalogo, departamento):
     a = model.req5(catalogo, departamento)
     return(a)
+def obtenerartistasfechas(catalog, f1,f2):
+    Artistasintervalo = model.requerimiento1(catalog,f1,f2)
+    return Artistasintervalo
+def fechas(inventario, f1,f2):
+    Obrasintervalo = model.obrasenrango(inventario,f1,f2)
+    return Obrasintervalo
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos

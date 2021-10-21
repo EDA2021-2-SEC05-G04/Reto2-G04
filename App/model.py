@@ -27,6 +27,7 @@
 import time
 import config as cf
 from DISClib.ADT import list as lt
+import datetime
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
@@ -50,6 +51,8 @@ def newcatalog ():
         "hasdep" : None
      }
     catalogo["diccnations"] = {} 
+    catalogo["artistsByBegindate"]=mp.newMap(1949,maptype="PROBING",loadfactor=0.5, comparefunction=cmpfunctionmap)
+    catalogo["obrabyDateAcquired"]=mp.newMap(300,maptype="PROBING",loadfactor=0.5,comparefunction=cmpfunctionmap) 
     catalogo["obras"] = lt.newList("ARRAY_LIST")
     catalogo["ConstiID"] = lt.newList("ARRAY_LIST",compararcid)
     catalogo["departamento"] =  lt.newList("ARRAY_LIST", comparardepartamento)
@@ -103,7 +106,17 @@ def adddepartamento(catalogo,dep, departamento):
         depa = nuevodepa(dep)
         lt.addLast(cat, depa)
     lt.addLast(depa["obras"], departamento)
-
+def requerimiento1(catalog,f1,f2):
+    listacompleta= lt.newList('ARRAY_LIST')
+    for i in range(int(f1), int(f2)+1):
+        if mp.contains (catalog["artistsByBegindate"],str(i)):
+            Entryartistasporano=mp.get(catalog["artistsByBegindate"], str(i))
+            Artistasporano=me.getValue(Entryartistasporano)["artistas"]
+            for j in range(1,lt.size(Artistasporano)+1): 
+                Artista= lt.getElement(Artistasporano, j)
+                lt.addLast(listacompleta, Artista)
+        
+    return listacompleta
 
 def nuevodepa(depa):
     reto= {
@@ -134,7 +147,38 @@ def hasid(catalogo):
     dict = catalogo["ConstiID"]
     for i in lt.iterator(dict):
         mp.put(catalogo["hasid"], i["cid"], i["obras"])
-
+def cargarobraporfecha(catalog,obra):
+    fecha_obra=obra["DateAcquired"]
+    if(fecha_obra != ""):
+        fecha_obra=datetime.datetime.strptime(fecha_obra, "%Y-%m-%d")
+        if(mp.contains(catalog["obrabyDateAcquired"],fecha_obra)):
+            valor2=mp.get(catalog["obrabyDateAcquired"],fecha_obra)
+            valor2=me.getValue(valor2)["obras"]
+            lt.addLast(valor2,obra)
+        else:
+            valor=crear_valor(obra)
+            mp.put(catalog["obrabyDateAcquired"],fecha_obra,valor)
+def crear_valor(obra):
+    dicc={"obras":lt.newList("ARRAY_LIST"),"fecha_adquisicion":obra["DateAcquired"]}
+    lt.addLast(dicc["obras"],obra)
+    return dicc    
+def obrasenrango(inventario,f1,f2):
+    map=inventario["obrabyDateAcquired"]
+    c=f1
+    auxiliar=lt.newList("ARRAY_LIST")
+    avance=datetime.timedelta(1,0,0)
+    contador=0
+    while c<=f2:
+        if(mp.contains(map,c)):
+            valor=me.getValue(mp.get(map,c))["obras"]
+            for i in range(1,lt.size(valor)+1):
+                obra=lt.getElement(valor,i)
+                lt.addLast(auxiliar,obra)
+                if(obra["CreditLine"] =="Purchase"):
+                    contador+=1
+        c+=avance
+    
+    return auxiliar,contador   
 def req3(catalogo, artist):
     consti = mp.get(catalogo["names"], artist)
     obras = mp.get(catalogo["hasid"], consti["value"]["ConstituentID"])
@@ -220,8 +264,33 @@ def req5 (catalogo, departamento):
     ord = mg.sort(dicc, ordenarporcosto)
     a = lt.subList(ord, 1, 5)
     return(round(costo, 2), pesoneto, a)
+def cargar_artistaporFecha(catalogo,artista):
+    mapaartistas= catalogo["artistsByBegindate"]
+    anoartista= artista ["BeginDate"]
+    cntainartist=mp.contains(mapaartistas, anoartista)
+    if cntainartist:
+        Entry_ano= mp.get(mapaartistas,anoartista)
+        Lista_de_artistas= me.getValue(Entry_ano)
+        Valor_lista=Lista_de_artistas ["artistas"]
+        lt.addLast(Valor_lista, artista)
+    else:
+        diccionario_artistas_por_fecha=lista_de_artistas_por_ano(artista)
+        mp.put(mapaartistas, anoartista, diccionario_artistas_por_fecha) 
+def lista_de_artistas_por_ano(artista):
     
-  
+    catalog={"artistas":None, "Fecha_nac":None}
+    catalog["artistas"]=lt.newList("ARRAY_LIST", cmpfunctionobras)
+    lt.addLast(catalog["artistas"],artista)
+    catalog["Fecha_nac"]=artista["BeginDate"]
+    return catalog
+def cmpfunctionobras(obra1, obra2):
+    key= me.getKey(obra2)
+    if(obra1 == key):
+        return 0
+    elif(obra1 >key):
+        return 1
+    else:
+        return -1
 # Construccion de modelos
 
 # Funciones para agregar informacion al catalogo
@@ -235,6 +304,14 @@ def compararcid(cid, listacid):
     if (cid in listacid["cid"]):
         return(0)    
     return(-1)
+def cmpfunctionmap(key,entry):
+    key2=me.getKey(entry)
+    if(key > key2):
+        return 1
+    elif key == key2:
+        return 0
+    else:
+        return -1
 def comparardepartamento(departamento, obra):
     if (departamento == obra['departamento']):
         return 0

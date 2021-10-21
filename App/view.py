@@ -30,6 +30,7 @@ from DISClib.ADT.map import get
 import config as cf
 import sys
 import controller
+import datetime
 from DISClib.ADT import list as lt
 assert cf
 
@@ -44,7 +45,8 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Listar cronologicamente los artistas")
+    print("3- Listar cronológicamente las obras")
     print("4-  casificar las obras de un artista por técnica ")
     print("5-  clasificar las obras por la nacionalidad de sus creadores ")
     print("6-  transportar obras de un departamento ")
@@ -68,11 +70,31 @@ while True:
 
 
     elif int(inputs[0]) == 2:
-        controller.has(catalogo)
-        print(catalogo["hasid"])
-        pass
+        print("listando cronológicamente los artistas.")
+        f1 = input("Fecha 1: ")
+        f2 = input("Fecha 2: ")
+        lista_ordenada = controller.obtenerartistasfechas(catalogo, f1,f2)
+        print(lt.size(lista_ordenada))
+        for i in range( 1, 4) : 
+            print(lt.getElement(lista_ordenada, i)["DisplayName"] +"   " +  lt.getElement(lista_ordenada, i)["Nationality"] + "  " +  lt.getElement(lista_ordenada, i)["BeginDate"] +"  " + lt.getElement(lista_ordenada, i)["EndDate"]+ "  " +lt.getElement(lista_ordenada, i)["Gender"])
+        print( "\n")
+        for i in range(lt.size(lista_ordenada)- 2, lt.size(lista_ordenada)+1) : 
+            print(lt.getElement(lista_ordenada, i)["DisplayName"] +"   " +  lt.getElement(lista_ordenada, i)["Nationality"] + "  " +  lt.getElement(lista_ordenada, i)["BeginDate"] +"  " + lt.getElement(lista_ordenada, i)["EndDate"]+ "  " +lt.getElement(lista_ordenada, i)["Gender"])
     elif  int(inputs[0]) == 3:
-        print("UWU")
+        print("listando cronológicamente las adquisiciones")
+        fi = input("fecha 1 : ")
+        fo = input("fecha 2 : ")
+        fechai = datetime.datetime.strptime(fi, "%Y-%m-%d")
+        fechao = datetime.datetime.strptime(fo, "%Y-%m-%d")
+
+        lista = controller.fechas(catalogo,fechai,fechao)
+        print("Números de obras en el rango:",lt.size(lista[0]))
+        print("Números de obras adquiridas por compra:",lista[1])
+        for i in range( 1, 4) : 
+            print(lt.getElement(lista[0], i)["Title"] +"   " +  lt.getElement(lista[0], i)["ConstituentID"] + "  " +  lt.getElement(lista[0], i)["DateAcquired"] +"  " + lt.getElement(lista[0], i)["Medium"]+ "  " +lt.getElement(lista[0], i)["Dimensions"])
+        print( "\n")
+        for i in range(lt.size(lista[0])- 2, lt.size(lista[0])+1) : 
+            print(lt.getElement(lista[0], i)["Title"] +"   " +  lt.getElement(lista[0], i)["ConstituentID"] + "  " +  lt.getElement(lista[0], i)["DateAcquired"] +"  " + lt.getElement(lista[0], i)["Medium"]+ "  " +lt.getElement(lista[0], i)["Dimensions"])
     elif  int(inputs[0]) == 4:
         controller.has(catalogo)
         artist = input("Nombre del artista: ")
